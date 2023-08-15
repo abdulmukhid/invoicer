@@ -9,10 +9,9 @@ export default function DeleteModal({ id }) {
     <>
       <div className="inline-block transition-all duration-200 bg-black bg-opacity-25 fixed left-0 right-0 bottom-0 top-0 z-20">
         <div className="w-9/12 max-w-2xl bg-white p-8 rounded shadow fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <h2 className="text-3xl mb-4">Danger Zone!</h2>
+          <h2 className="text-3xl mb-4">Delete Item</h2>
           <p className="text-slate-600 mb-10">
-            Are you sure you want to delete this item? Take note that this
-            action is irreversible. Therefore, proceed with caution...
+            Are you sure you want to delete this item?
           </p>
 
           <ul className="flex flex-wrap gap-6 items-start md:items-start justify-between">

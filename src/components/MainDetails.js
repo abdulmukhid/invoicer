@@ -6,10 +6,11 @@ export default function MainDetails() {
 
   return (
     <>
-      <section className="flex flex-col items-end justify-end">
-        <h2 className="font-bold text-3xl uppercase mb-1">{name}</h2>
-        <p>{address}</p>
-      </section>
+      {/* <section className="flex flex-col items-end justify-end">
+        <h2 className="font-bold text-3xl uppercase mb-1">Shop Name</h2>
+        <p>+91 986838292</p>
+        <p>Vardhaman, Nanded-kinwat, Himayat Nagar, +91 986838292</p>
+      </section> */}
     </>
   );
 }

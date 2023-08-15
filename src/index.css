@@ -9,13 +9,16 @@
   --red-card: #f12711;
   --yellow-card: #f5af19;
 }
+#root{
+  background-color: #f1f1f1db;
+}
 
 ::selection,
 ::-moz-selection {
   @apply bg-teal-500 text-white;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   @apply w-3;
 }
 
@@ -25,7 +28,7 @@
 
 ::-webkit-scrollbar-thumb {
   @apply bg-teal-400 rounded-lg hover:bg-teal-500 transition-all duration-200;
-}
+} */
 
 .beta__tag {
   position: absolute;
@@ -97,10 +100,10 @@ textarea {
   outline: none;
 }
 
-input:focus,
+/* input:focus,
 textarea:focus {
   border: 2px solid hsl(217, 91%, 60%);
-}
+} */
 
 button {
   user-select: none;
@@ -273,4 +276,52 @@ button {
     margin-top: -6rem;
     margin-bottom: 2rem;
   }
+}
+
+.custom-input-align label{
+  margin-top: -5px;
+}
+.custom-input-align input{
+  padding: 10px 10px !important;
+}
+.custom-mb{
+  margin-bottom: 15px;
+}
+.btn-left-align{
+  align-items: flex-end;
+}
+.custom-table th, td{
+  padding: 8px;
+}
+.custom-btn-width{
+  width: 110px;
+}
+.txt-alig{
+  text-align: center;
+}
+.custom-picker .MuiStack-root{
+  margin-top: -10px !important;
+  padding-top: 10px !important;
+}
+.css-1k455el {
+  min-height: 20px !important;
+}
+@media (min-width: 600px){
+.css-hyum1k-MuiToolbar-root {
+  min-height: 50px !important;
+}
+}
+.main-header{
+  background: rgb(8,0,36);
+  background: linear-gradient(90deg, rgba(8,0,36,1) 0%, rgba(9,54,121,1) 41%, rgba(0,212,255,1) 100%);
+  z-index: 9999 !important;
+}
+.dashboard-menu{
+  min-height: 50px !important;
+}
+.dashboard-list{
+  padding: 0 !important;
+}
+html, body, #root{
+  height: 100%;
 }

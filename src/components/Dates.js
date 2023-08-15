@@ -14,9 +14,6 @@ export default function Dates() {
           <li className="p-1 bg-gray-100">
             <span className="font-bold">Invoice date:</span> {invoiceDate}
           </li>
-          <li className="p-1 ">
-            <span className="font-bold">Due date:</span> {dueDate}
-          </li>
         </ul>
       </article>
     </>

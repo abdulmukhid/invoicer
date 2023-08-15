@@ -2,28 +2,35 @@ import { createContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import collect from "collect.js";
+import dayjs from 'dayjs';
 
 export const State = createContext();
 
 export default function StateContext({ children }) {
   const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [bankName, setBankName] = useState("");
   const [bankAccount, setBankAccount] = useState("");
   const [website, setWebsite] = useState("");
   const [clientName, setClientName] = useState("");
+  const [clientPhoneNumber, setClientPhoneNumber] = useState("");
   const [clientAddress, setClientAddress] = useState("");
-  const [invoiceNumber, setInvoiceNumber] = useState("");
-  const [invoiceDate, setInvoiceDate] = useState("");
+  const [invoiceNumber, setInvoiceNumber] = useState(76842031);
+  const [invoiceDate, setInvoiceDate] = useState(dayjs(new Date()));
   const [dueDate, setDueDate] = useState("");
   const [notes, setNotes] = useState("");
+  const [gstSelect, setGstSelect] = useState("GST");
+  const [gstNumber, setGstNumber] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
   const [amount, setAmount] = useState("");
   const [list, setList] = useState([]);
+  const [customerDataSave, setCustomerDataSave] = useState([]);
   const [total, setTotal] = useState(0);
   const [width] = useState(641);
   // const [invoices, setInvoices] = useState([]);
@@ -42,6 +49,11 @@ export default function StateContext({ children }) {
       alert("Place your phone in landscape mode for the best experience");
     }
   }, [width]);
+
+  const onSelectGST = (event) => {
+    setGstSelect(event.target.value);
+    console.log(gstSelect);
+  };
 
   // Submit form function
   const handleSubmit = (e) => {
@@ -64,6 +76,22 @@ export default function StateContext({ children }) {
       setList([...list, newItems]);
       setIsEditing(false);
       console.log(list);
+    }
+
+    if (!customerName || !phoneNumber || !address) {
+      toast.error("Please fill in all inputs");
+    } else {
+      const newItems = {
+        id: uuidv4(),
+        gstNumber,
+        customerName,
+        phoneNumber,
+        address,
+      };
+      setGstNumber(newItems.gstNumber);
+      setClientName(newItems.customerName);
+      setClientPhoneNumber(newItems.phoneNumber);
+      setClientAddress(newItems.address);
     }
   };
 
@@ -99,13 +127,20 @@ export default function StateContext({ children }) {
 
   // Use collect.js to calculate the total amount of items in the table. This is a much better function than the commented one above.
   const calculateTotal = () => {
-    const allItems = list.map((item) => item.price);
+    const allItems = list.map((item) => item.amount);
 
     setTotal(collect(allItems).sum());
   };
 
   useEffect(() => {
     calculateTotal();
+    // const date = new Date();
+
+    // let day = date.getDate();
+    // let month = date.getMonth() + 1;
+    // let year = date.getFullYear();
+    // let currentDate = `${day}/${month}/${year}`;
+    // setInvoiceDate(currentDate);
   });
 
   // Edit function
@@ -142,6 +177,8 @@ export default function StateContext({ children }) {
     setWebsite,
     clientName,
     setClientName,
+    clientPhoneNumber,
+    setClientPhoneNumber,
     clientAddress,
     setClientAddress,
     invoiceNumber,
@@ -152,6 +189,16 @@ export default function StateContext({ children }) {
     setDueDate,
     notes,
     setNotes,
+    gstSelect,
+    setGstSelect,
+    gstNumber,
+    setGstNumber,
+    customerName,
+    setCustomerName,
+    phoneNumber,
+    setPhoneNumber,
+    address,
+    setAddress,
     description,
     setDescription,
     quantity,
@@ -171,6 +218,7 @@ export default function StateContext({ children }) {
     setIsEditing,
     showModal,
     setShowModal,
+    onSelectGST,
     handleSubmit,
     editRow,
     deleteRow,
