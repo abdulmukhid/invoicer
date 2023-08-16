@@ -2,7 +2,7 @@ import { createContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import collect from "collect.js";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 
 export const State = createContext();
 
@@ -148,9 +148,10 @@ export default function StateContext({ children }) {
     const editingRow = list.find((row) => row.id === id);
     setList(list.filter((row) => row.id !== id));
     setIsEditing(true);
-    setDescription(editingRow.description);
-    setQuantity(editingRow.quantity);
-    setPrice(editingRow.price);
+    const { description, quantity, price } = editingRow;
+    setDescription(description);
+    setQuantity(quantity);
+    setPrice(price);
   };
 
   // Delete function
