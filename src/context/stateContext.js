@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import collect from "collect.js";
 import dayjs from "dayjs";
+import { saveCustomerDataService } from "../servises/BillingApiService";
 
 export const State = createContext();
 
@@ -16,17 +17,19 @@ export default function StateContext({ children }) {
   const [clientName, setClientName] = useState("");
   const [clientPhoneNumber, setClientPhoneNumber] = useState("");
   const [clientAddress, setClientAddress] = useState("");
-  const [invoiceNumber, setInvoiceNumber] = useState(76842031);
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [saveInvoiceData, setSaveInvoiceData] = useState({});
   const [invoiceDate, setInvoiceDate] = useState(dayjs(new Date()));
   const [dueDate, setDueDate] = useState("");
   const [notes, setNotes] = useState("");
-  const [gstSelect, setGstSelect] = useState("GST");
+  const [totalItems, setTotalItems] = useState([]);
+  const [gstSelect, setGstSelect] = useState("nonGST");
   const [gstNumber, setGstNumber] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
-  const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState("");
+  const [itemName, setItemName] = useState("");
+  const [qyt, setQyt] = useState("");
   const [price, setPrice] = useState("");
   const [amount, setAmount] = useState("");
   const [list, setList] = useState([]);
@@ -37,6 +40,7 @@ export default function StateContext({ children }) {
   const [isEditing, setIsEditing] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [deleteRecordStatus, setDeleteRecordStatus] = useState();
 
   const componentRef = useRef();
 
@@ -59,23 +63,26 @@ export default function StateContext({ children }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!description || !quantity || !price) {
+    if (!itemName || !qyt || !price) {
       toast.error("Please fill in all inputs");
     } else {
       const newItems = {
-        id: uuidv4(),
-        description,
-        quantity,
+        id: 0,
+        itemName,
+        qyt,
         price,
         amount,
+        created: "2023-08-18T13:34:24.279Z",
+        modified: "2023-08-18T13:34:24.279Z",
+        deleted: false,
       };
-      setDescription("");
-      setQuantity("");
+      setItemName("");
+      setQyt("");
       setPrice("");
       setAmount("");
       setList([...list, newItems]);
       setIsEditing(false);
-      console.log(list);
+      console.log("check list :", list);
     }
 
     if (!customerName || !phoneNumber || !address) {
@@ -98,11 +105,11 @@ export default function StateContext({ children }) {
   // Calculate items amount function
   useEffect(() => {
     const calculateAmount = (amount) => {
-      setAmount(quantity * price);
+      setAmount(qyt * price);
     };
 
     calculateAmount(amount);
-  }, [amount, price, quantity, setAmount]);
+  }, [amount, price, qyt, setAmount]);
 
   /* Calculate total amount of items in table
   This is the previous function to calculate the total amount of items in the table
@@ -123,7 +130,7 @@ export default function StateContext({ children }) {
 
   // useEffect(() => {
   //   CalcSum();
-  // }, [price, quantity]);
+  // }, [price, qyt]);
 
   // Use collect.js to calculate the total amount of items in the table. This is a much better function than the commented one above.
   const calculateTotal = () => {
@@ -148,10 +155,53 @@ export default function StateContext({ children }) {
     const editingRow = list.find((row) => row.id === id);
     setList(list.filter((row) => row.id !== id));
     setIsEditing(true);
-    const { description, quantity, price } = editingRow;
-    setDescription(description);
-    setQuantity(quantity);
+    const { itemName, qyt, price } = editingRow;
+    setItemName(itemName);
+    setQyt(qyt);
     setPrice(price);
+  };
+
+  const setInvoiceDataHandler = async () => {
+    debugger;
+    // const data = {
+    //   "customerName": customerName,
+    //   "address": address,
+    //   "mobileNumber": phoneNumber,
+    //   "gstNumber": gstNumber,
+    //   "item": list,
+    //   "deleted": false,
+    //   "created": "2023-08-18T12:23:22.557Z",
+    //   "modified": "2023-08-18T12:23:22.557Z",
+    // };
+
+    const data = {
+      id:0,
+      address: address,
+      created: "2023-08-18T12:23:22.557Z",
+      modified: "2023-08-18T12:23:22.557Z",
+      customerName: customerName,
+      deleted: false,
+      gstNumber: "1234634",
+      mobileNumber: phoneNumber,
+      item: list,
+    };
+    setSaveInvoiceData(data);
+
+    let response = await saveCustomerDataService(data);
+  };
+
+  const editTableHandler = (record, id, navigate) => {
+    const editRecord = record.find((row) => row.id == id);
+    const { customerName, mobileNumber, address, item } = editRecord;
+    setTotalItems(item);
+    console.log(totalItems);
+    // setitemName(item.itemName);
+    // setQyt(item.qty);
+    setCustomerName(customerName);
+    setPhoneNumber(mobileNumber);
+    setAddress(address);
+    setList(item);
+    navigate("/");
   };
 
   // Delete function
@@ -194,16 +244,18 @@ export default function StateContext({ children }) {
     setGstSelect,
     gstNumber,
     setGstNumber,
+    totalItems,
+    setTotalItems,
     customerName,
     setCustomerName,
     phoneNumber,
     setPhoneNumber,
     address,
     setAddress,
-    description,
-    setDescription,
-    quantity,
-    setQuantity,
+    itemName,
+    setItemName,
+    qyt,
+    setQyt,
     price,
     setPrice,
     amount,
@@ -222,9 +274,13 @@ export default function StateContext({ children }) {
     onSelectGST,
     handleSubmit,
     editRow,
+    editTableHandler,
+    setInvoiceDataHandler,
     deleteRow,
     showLogoutModal,
     setShowLogoutModal,
+    deleteRecordStatus,
+    setDeleteRecordStatus,
   };
 
   return <State.Provider value={context}>{children}</State.Provider>;

@@ -9,7 +9,7 @@
   --red-card: #f12711;
   --yellow-card: #f5af19;
 }
-#root{
+html, #root{
   background-color: #f1f1f1db;
 }
 
@@ -278,6 +278,10 @@ button {
   }
 }
 
+.custom-input-align{
+  width: 100%;
+}
+
 .custom-input-align label{
   margin-top: -5px;
 }
@@ -323,5 +327,10 @@ button {
   padding: 0 !important;
 }
 html, body, #root{
-  height: 100%;
+  height: auto;
+}
+
+/* new added */
+.active {
+  background-color: rgba(0, 0, 0, 0.1); /* Add your desired active state styling */
 }

@@ -1,31 +1,42 @@
-import React, { useContext } from "react";
-import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import React, { useContext, useEffect } from "react";
+// import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditSharpIcon from '@mui/icons-material/EditSharp';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DeleteModal from "./DeleteModal";
 import { State } from "../context/stateContext";
-import { FormControlLabel, Radio, TextField, RadioGroup } from "@mui/material";
-import ReactToPrint from "react-to-print";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import dayjs from 'dayjs';
-import PrintIcon from '@mui/icons-material/Print';
+import { FormControlLabel, Radio, TextField, RadioGroup, Button } from "@mui/material";
+import ReactToPrint, { PrintContextConsumer } from "react-to-print";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import dayjs from "dayjs";
+import PrintIcon from "@mui/icons-material/Print";
+import { getInvoiceNumberService } from "../servises/BillingApiService";
+import { useReactToPrint } from "react-to-print";
+import IconButton from '@mui/material/IconButton';
+import DoneIcon from '@mui/icons-material/Done';
+import AddIcon from '@mui/icons-material/Add';
 
 export default function TableForm() {
+  useEffect(() => {
+    getInvoiceNumber();
+  }, []);
   const [value, setValue] = React.useState(dayjs(new Date()));
   const {
+    totalItems,
     customerName,
     setCustomerName,
     phoneNumber,
     setPhoneNumber,
     address,
     setAddress,
-    description,
-    setDescription,
-    quantity,
-    setQuantity,
+    itemName,
+    setItemName,
+    qyt,
+    setQyt,
     price,
     setPrice,
     amount,
@@ -45,7 +56,14 @@ export default function TableForm() {
     setInvoiceDate,
     invoiceNumber,
     setInvoiceNumber,
+    setInvoiceDataHandler,
   } = useContext(State);
+
+  const getInvoiceNumber = async () => {
+    let response = await getInvoiceNumberService();
+    setInvoiceNumber(response.data);
+    console.log(response.data);
+  };
 
   return (
     <>
@@ -58,9 +76,14 @@ export default function TableForm() {
           name="controlled-radio-buttons-group"
           value={gstSelect}
           onChange={onSelectGST}
+          className="custom-mb"
         >
+          <FormControlLabel
+            value="nonGST"
+            control={<Radio />}
+            label="Non GST"
+          />
           <FormControlLabel value="GST" control={<Radio />} label="GST" />
-          <FormControlLabel value="nonGST" control={<Radio />} label="Non GST" />
         </RadioGroup>
         <div className="md:grid grid-cols-3 gap-5">
           {gstSelect === "GST" ? (
@@ -75,7 +98,7 @@ export default function TableForm() {
               />
             </div>
           ) : (
-            <div style={{ display: "none" }}></div> 
+            <div style={{ display: "none" }}></div>
           )}
           <div className="flex flex-col custom-mb custom-picker">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -91,6 +114,7 @@ export default function TableForm() {
           </div>
           <div className="flex flex-col custom-mb">
             <TextField
+              disabled
               id="invoice-number"
               label="Invoice Number"
               variant="outlined"
@@ -135,11 +159,11 @@ export default function TableForm() {
         <div className="md:grid grid-cols-3 gap-5">
           <div className="flex flex-col  custom-mb">
             <TextField
-              id="description"
-              label="Item"
+              id="itemName"
+              label="Item Name"
               variant="outlined"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={itemName}
+              onChange={(e) => setItemName(e.target.value)}
               className="custom-input-align"
             />
           </div>
@@ -148,8 +172,8 @@ export default function TableForm() {
               id="quantity"
               label="Quantity"
               variant="outlined"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              value={qyt}
+              onChange={(e) => setQyt(e.target.value)}
               className="custom-input-align"
             />
           </div>
@@ -170,12 +194,12 @@ export default function TableForm() {
             <p>{amount}</p>
           </div>
           <div className="flex flex-col btn-left-align">
-            <button
+            <Button
+              variant="contained"
               type="submit"
-              className="bg-blue-500 mb-5 text-white font-bold py-2 px-8 rounded hover:bg-blue-600 hover:text-white transition-all duration-150 hover:ring-4 hover:ring-blue-400"
-            >
+              startIcon={isEditing ? < DoneIcon /> : < AddIcon />}>
               {isEditing ? "Finish Editing" : "Add Item"}
-            </button>
+            </Button>
           </div>
         </div>
       </form>
@@ -194,23 +218,23 @@ export default function TableForm() {
             <td className="font-bold">Delete</td>
           </tr>
         </thead>
-        {list.map(({ id, description, quantity, price, amount }) => (
+        {list.map(({ id, itemName, qyt, price, amount }) => (
           <React.Fragment key={id}>
             <tbody>
               <tr className="h-10">
-                <td>{description}</td>
-                <td>{quantity}</td>
+                <td>{itemName}</td>
+                <td>{qyt}</td>
                 <td>{price}</td>
                 <td className="amount">{amount}</td>
                 <td>
-                  <button onClick={() => editRow(id)}>
-                    <AiOutlineEdit className="text-green-500 font-bold text-xl" />
-                  </button>
+                  <IconButton onClick={() => editRow(id)} aria-label="edit">
+                    <EditSharpIcon />
+                  </IconButton>
                 </td>
                 <td>
-                  <button onClick={() => setShowModal(true)}>
-                    <AiOutlineDelete className="text-red-500 font-bold text-xl" />
-                  </button>
+                  <IconButton onClick={() => setShowModal(true)} aria-label="delete">
+                    <DeleteIcon />
+                  </IconButton>
                 </td>
               </tr>
             </tbody>
@@ -223,12 +247,16 @@ export default function TableForm() {
         <div className="flex flex-col custom-mb">
           <ReactToPrint
             trigger={() => (
-              <button className="custom-btn-width bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 hover:text-white transition-all duration-150 hover:ring-4 hover:ring-blue-400">
-                <PrintIcon></PrintIcon> Print
-              </button>
+              <Button variant="contained" className="custom-btn-width" startIcon={<PrintIcon />}>
+                Print
+              </Button>
             )}
+            onAfterPrint={() => {
+              setInvoiceDataHandler();
+              console.log("Document Printed Successfully!");
+            }}
             content={() => componentRef.current}
-          />
+          ></ReactToPrint>
         </div>
         <div className="flex flex-col  custom-mb">
           <h2 className="flex items-end justify-end text-gray-800 text-2xl font-bold">

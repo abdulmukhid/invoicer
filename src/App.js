@@ -7,6 +7,7 @@ import { Header, Footer, Error } from "./pages";
 import ThankYou from "./pages/ThankYou";
 import Cancelled from "./pages/Cancelled";
 import AllRecords from "./components/AllRecords";
+import StateContext from "./context/stateContext";
 
 export default function App() {
   const { user } = useContext(AuthContext);
@@ -16,7 +17,7 @@ export default function App() {
       <ScrollToTop />
       <Header />
       <Invoice />
-      
+      <StateContext />
     </BrowserRouter>
   );
 }

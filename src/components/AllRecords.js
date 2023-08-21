@@ -9,8 +9,17 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { AiOutlineDelete } from "react-icons/ai";
-import { AiOutlineEdit } from "react-icons/ai";
+// import { AiOutlineDelete } from "react-icons/ai";
+// import { AiOutlineEdit } from "react-icons/ai";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditSharpIcon from "@mui/icons-material/EditSharp";
+import {
+  deleteRecordById,
+  getListOfRecords,
+} from "../servises/AllRecordsServises";
+import { useNavigate } from "react-router-dom";
+import { Alert, Button } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -68,50 +77,86 @@ const records = [
 ];
 
 export default function AllRecords() {
-  const { invoiceNumber, invoiceDate, dueDate } = useContext(State);
+  const { editTableHandler, deleteRecordStatus, setDeleteRecordStatus } =
+    useContext(State);
+  const [record, setRecords] = React.useState([0]);
+
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    getRecords();
+  }, []);
+
+  const getRecords = async () => {
+    let response = await getListOfRecords();
+    setRecords(response.data);
+    console.log(response.data);
+  };
+
+  const deleteRecord = async (id) => {
+    let response = await deleteRecordById(id);
+    if (response.data === "Deleted Successfully") {
+      setTimeout(() => {
+        setDeleteRecordStatus(false);
+        getRecords();
+      }, 3000);
+      setDeleteRecordStatus(true);
+    }
+  };
 
   return (
     <>
+      {deleteRecordStatus ? (
+        <Alert severity="success">Data Deleted Successfully!</Alert>
+      ) : (
+        <Alert style={{ display: "none" }} severity="error">
+          Error
+        </Alert>
+      )}
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 700 }} aria-label="customized table">
           <TableHead>
             <TableRow>
               <StyledTableCell>Sr No</StyledTableCell>
               <StyledTableCell>Customer Name</StyledTableCell>
-              <StyledTableCell align="right">Phone Number</StyledTableCell>
-              <StyledTableCell align="right">Address</StyledTableCell>
-              <StyledTableCell align="right">Invoice Date</StyledTableCell>
-              <StyledTableCell align="right">Price</StyledTableCell>
-              <StyledTableCell align="right">Edit</StyledTableCell>
-              <StyledTableCell align="right">Delete</StyledTableCell>
+              <StyledTableCell>Phone Number</StyledTableCell>
+              <StyledTableCell>Address</StyledTableCell>
+              <StyledTableCell>Invoice Date</StyledTableCell>
+              {/* <StyledTableCell align="right">Price</StyledTableCell> */}
+              <StyledTableCell>Edit</StyledTableCell>
+              <StyledTableCell>Delete</StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {records.map((records) => (
-              <StyledTableRow key={records.customerName}>
-                <StyledTableCell align="right">{records.id}</StyledTableCell>
+            {record.map((data, index) => (
+              <StyledTableRow key={data.id}>
+                <StyledTableCell>{data.id}</StyledTableCell>
                 <StyledTableCell component="th" scope="row">
-                  {records.customerName}
+                  {data.customerName}
                 </StyledTableCell>
-                <StyledTableCell align="right">
-                  {records.phoneNumber}
-                </StyledTableCell>
-                <StyledTableCell align="right">
-                  {records.address}
-                </StyledTableCell>
-                <StyledTableCell align="right">{records.date}</StyledTableCell>
-                <StyledTableCell align="right">{records.price}</StyledTableCell>
+                <StyledTableCell>{data.mobileNumber}</StyledTableCell>
+                <StyledTableCell>{data.address}</StyledTableCell>
+                <StyledTableCell>{data.created}</StyledTableCell>
+                {/* <StyledTableCell align="right">{records.price}</StyledTableCell> */}
 
-                <StyledTableCell align="right">
-                  <button>
-                    <AiOutlineEdit className="text-green-500 font-bold text-xl" />
-                  </button>
+                <StyledTableCell>
+                  <IconButton
+                    color="primary"
+                    onClick={() => editTableHandler(record, data.id, navigate)}
+                    aria-label="edit"
+                  >
+                    <EditSharpIcon />
+                  </IconButton>
                 </StyledTableCell>
 
-                <StyledTableCell align="right">
-                  <button>
-                    <AiOutlineDelete className="text-red-500 font-bold text-xl" />
-                  </button>
+                <StyledTableCell>
+                  <IconButton
+                    color="primary"
+                    onClick={() => deleteRecord(data.id)}
+                    aria-label="delete"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
