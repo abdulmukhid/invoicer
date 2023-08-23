@@ -9,7 +9,7 @@ export default function Table() {
       <table width="100%" className="mb-10">
         <thead>
           <tr className="bg-gray-100 p-1">
-            <td className="font-bold">Description</td>
+            <td className="font-bold">Item Name</td>
             <td className="font-bold">Quantity</td>
             <td className="font-bold">Price</td>
             <td className="font-bold">Amount</td>

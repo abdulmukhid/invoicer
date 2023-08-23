@@ -22,18 +22,13 @@ import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import dayjs from "dayjs";
 import PrintIcon from "@mui/icons-material/Print";
 import { getInvoiceNumberService } from "../servises/BillingApiService";
-import { useReactToPrint } from "react-to-print";
 import IconButton from "@mui/material/IconButton";
 import DoneIcon from "@mui/icons-material/Done";
 import AddIcon from "@mui/icons-material/Add";
 
-export default function Table
-() {
-  
-  const [value, setValue] = React.useState(dayjs(new Date()));
+export default function Table() {
   const [loading, setLoading] = React.useState(true);
   const {
-    totalItems,
     customerName,
     setCustomerName,
     phoneNumber,
@@ -66,7 +61,6 @@ export default function Table
     setInvoiceDataHandler,
     refreshPage,
     setRefreshPage,
-    clearFields
   } = useContext(State);
 
   useEffect(() => {
@@ -75,7 +69,6 @@ export default function Table
 
   const getInvoiceNumber = async () => {
     setLoading(true);
-    clearFields();
     let response = await getInvoiceNumberService();
     setTimeout(() => {
       setInvoiceNumber(response.data);
@@ -112,6 +105,7 @@ export default function Table
               {gstSelect === "GST" ? (
                 <div className="flex flex-col custom-mb">
                   <TextField
+                    disabled
                     id="gst-number"
                     label="GST Number"
                     variant="outlined"
@@ -125,7 +119,7 @@ export default function Table
               )}
               <div className="flex flex-col custom-mb custom-picker">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={["DatePicker", "DatePicker"]}>x
+                  <DemoContainer components={["DatePicker", "DatePicker"]}>
                     <DatePicker
                       label="Invoice Date"
                       value={invoiceDate}
@@ -154,6 +148,7 @@ export default function Table
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   className="custom-input-align"
+                  required
                 />
               </div>
               <div className="flex flex-col custom-mb">
@@ -164,6 +159,9 @@ export default function Table
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   className="custom-input-align"
+                  required
+                  minlength="10"
+                  type="number"
                 />
               </div>
               <div className="flex flex-col custom-mb">
@@ -174,6 +172,7 @@ export default function Table
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   className="custom-input-align"
+                  required
                 />
               </div>
             </div>
@@ -188,6 +187,7 @@ export default function Table
                   value={itemName}
                   onChange={(e) => setItemName(e.target.value)}
                   className="custom-input-align"
+                  required
                 />
               </div>
               <div className="flex flex-col custom-mb">
@@ -198,6 +198,7 @@ export default function Table
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                   className="custom-input-align"
+                  required
                 />
               </div>
               <div className="flex flex-col custom-mb">
@@ -208,11 +209,12 @@ export default function Table
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                   className="custom-input-align"
+                  required
                 />
               </div>
             </div>
             <div className="md:grid grid-cols-2 gap-5">
-            <div className="flex flex-col">
+              <div className="flex flex-col">
                 <label htmlFor="amount">Amount</label>
                 <p>{amount}</p>
               </div>
@@ -277,6 +279,7 @@ export default function Table
           <ReactToPrint
             trigger={() => (
               <Button
+                disabled={list.length == 0}
                 variant="contained"
                 className="custom-btn-width"
                 startIcon={<PrintIcon />}

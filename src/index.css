@@ -335,6 +335,6 @@ html, body, #root{
   background-color: rgba(0, 0, 0, 0.1); /* Add your desired active state styling */
 }
 
-.table-edit MuiTableCell-root{
- padding: 8 0 8 16;
+.table-edit .css-132a6sb-MuiTableCell-root{
+ padding: 8px 0px 8px 16px !important;
 }

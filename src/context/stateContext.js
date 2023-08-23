@@ -61,7 +61,6 @@ export default function StateContext({ children }) {
   };
 
   const clearFields = () => {
-    setGstNumber("");
     setInvoiceNumber("");
     setCustomerName("");
     setPhoneNumber("");
@@ -155,7 +154,7 @@ export default function StateContext({ children }) {
       created: "2023-08-18T13:34:24.279Z",
       modified: "2023-08-18T13:34:24.279Z",
       deleted: false,
-      gstNumber: gstNumber,
+      gstNumber: gstSelect === "GST" ? gstNumber : "",
       invoiceDate: invoiceDate.format(),
       invoiceNumber: invoiceNumber,
       mobileNumber: phoneNumber,

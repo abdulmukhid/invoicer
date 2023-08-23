@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -21,8 +21,9 @@ import MailIcon from "@mui/icons-material/Mail";
 import TableForm from "./TableForm";
 import { Card, Grid } from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
-import { Link, Routes, Route } from "react-router-dom";
+import { Link, Routes, Route, useLocation } from "react-router-dom";
 import AllRecords from "./AllRecords";
+import { State } from "../context/stateContext";
 
 const drawerWidth = 240;
 
@@ -91,6 +92,7 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function InvoiceDashboardMenu() {
+  const { clearFields } = useContext(State);
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -102,7 +104,12 @@ export default function InvoiceDashboardMenu() {
     setOpen(false);
   };
 
-  
+  //assigning location variable
+  const location = useLocation();
+  //destructuring pathname from location
+  const { pathname } = location;
+  //Javascript split method to get the name of the path in array
+  const splitLocation = pathname.split("/");
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -138,7 +145,14 @@ export default function InvoiceDashboardMenu() {
         </DrawerHeader>
         <Divider />
         <List className="dashboard-list">
-          <ListItem key={"Invoice"} component={Link} to={"/"} disablePadding>
+          <ListItem
+            className={splitLocation[1] === "" ? "active" : ""}
+            to={"/"}
+            onClick={() => clearFields()}
+            key={"Invoice"}
+            component={Link}
+            disablePadding
+          >
             <ListItemButton>
               <ListItemIcon>
                 <InboxIcon />
@@ -149,11 +163,12 @@ export default function InvoiceDashboardMenu() {
         </List>
         <List className="dashboard-list">
           <ListItem
+            className={splitLocation[1] === "Records" ? "active" : ""}
             key={"Records"}
             component={Link}
             to={"/" + "Records"}
+            onClick={() => clearFields()}
             disablePadding
-            
           >
             <ListItemButton>
               <ListItemIcon>
