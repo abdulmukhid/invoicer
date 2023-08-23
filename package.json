@@ -15,7 +15,7 @@
     "axios": "^1.4.0",
     "collect.js": "^4.36.1",
     "dayjs": "^1.11.9",
-    "formik": "^2.4.2",
+    "formik": "^2.4.3",
     "netlify-identity-widget": "^1.9.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -26,7 +26,8 @@
     "react-toastify": "^9.0.3",
     "styled-components": "^5.3.11",
     "uuid": "^8.3.2",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "yup": "^1.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

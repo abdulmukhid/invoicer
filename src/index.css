@@ -334,3 +334,7 @@ html, body, #root{
 .active {
   background-color: rgba(0, 0, 0, 0.1); /* Add your desired active state styling */
 }
+
+.table-edit MuiTableCell-root{
+ padding: 8 0 8 16;
+}

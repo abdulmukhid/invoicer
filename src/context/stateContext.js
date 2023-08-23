@@ -24,12 +24,12 @@ export default function StateContext({ children }) {
   const [notes, setNotes] = useState("");
   const [totalItems, setTotalItems] = useState([]);
   const [gstSelect, setGstSelect] = useState("nonGST");
-  const [gstNumber, setGstNumber] = useState("");
+  const [gstNumber, setGstNumber] = useState("921234567");
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [itemName, setItemName] = useState("");
-  const [qyt, setQyt] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [price, setPrice] = useState("");
   const [amount, setAmount] = useState("");
   const [list, setList] = useState([]);
@@ -41,6 +41,7 @@ export default function StateContext({ children }) {
   const [showModal, setShowModal] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [deleteRecordStatus, setDeleteRecordStatus] = useState();
+  const [refreshPage, setRefreshPage] = useState(false);
 
   const componentRef = useRef();
 
@@ -59,25 +60,38 @@ export default function StateContext({ children }) {
     console.log(gstSelect);
   };
 
+  const clearFields = () => {
+    setGstNumber("");
+    setInvoiceNumber("");
+    setCustomerName("");
+    setPhoneNumber("");
+    setAddress("");
+    setItemName("");
+    setQuantity("");
+    setPrice("");
+    setAmount("");
+    setList([]);
+  };
+
   // Submit form function
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!itemName || !qyt || !price) {
+    if (!itemName || !quantity || !price) {
       toast.error("Please fill in all inputs");
     } else {
       const newItems = {
         id: 0,
         itemName,
-        qyt,
+        quantity,
         price,
         amount,
+        deleted: false,
         created: "2023-08-18T13:34:24.279Z",
         modified: "2023-08-18T13:34:24.279Z",
-        deleted: false,
       };
       setItemName("");
-      setQyt("");
+      setQuantity("");
       setPrice("");
       setAmount("");
       setList([...list, newItems]);
@@ -105,32 +119,11 @@ export default function StateContext({ children }) {
   // Calculate items amount function
   useEffect(() => {
     const calculateAmount = (amount) => {
-      setAmount(qyt * price);
+      setAmount(quantity * price);
     };
 
     calculateAmount(amount);
-  }, [amount, price, qyt, setAmount]);
-
-  /* Calculate total amount of items in table
-  This is the previous function to calculate the total amount of items in the table
-  But it has a bug where if you delete an item from the table, it still keeps the previous total amount.
-  The function after this comment uses `collect.js` which is a much better solution.  
-  */
-  // function CalcSum() {
-  //   let rows = document.querySelectorAll(".amount");
-  //   let sum = 0;
-
-  //   for (let i = 0; i < rows.length; i++) {
-  //     if (rows[i].className === "amount") {
-  //       sum += isNaN(rows[i].innerHTML) ? 0 : parseInt(rows[i].innerHTML);
-  //       setTotal(sum);
-  //     }
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   CalcSum();
-  // }, [price, qyt]);
+  }, [amount, price, quantity, setAmount]);
 
   // Use collect.js to calculate the total amount of items in the table. This is a much better function than the commented one above.
   const calculateTotal = () => {
@@ -141,13 +134,6 @@ export default function StateContext({ children }) {
 
   useEffect(() => {
     calculateTotal();
-    // const date = new Date();
-
-    // let day = date.getDate();
-    // let month = date.getMonth() + 1;
-    // let year = date.getFullYear();
-    // let currentDate = `${day}/${month}/${year}`;
-    // setInvoiceDate(currentDate);
   });
 
   // Edit function
@@ -155,39 +141,31 @@ export default function StateContext({ children }) {
     const editingRow = list.find((row) => row.id === id);
     setList(list.filter((row) => row.id !== id));
     setIsEditing(true);
-    const { itemName, qyt, price } = editingRow;
+    const { itemName, quantity, price } = editingRow;
     setItemName(itemName);
-    setQyt(qyt);
+    setQuantity(quantity);
     setPrice(price);
   };
 
   const setInvoiceDataHandler = async () => {
-    debugger;
-    // const data = {
-    //   "customerName": customerName,
-    //   "address": address,
-    //   "mobileNumber": phoneNumber,
-    //   "gstNumber": gstNumber,
-    //   "item": list,
-    //   "deleted": false,
-    //   "created": "2023-08-18T12:23:22.557Z",
-    //   "modified": "2023-08-18T12:23:22.557Z",
-    // };
-
     const data = {
-      id:0,
+      id: 0,
       address: address,
-      created: "2023-08-18T12:23:22.557Z",
-      modified: "2023-08-18T12:23:22.557Z",
       customerName: customerName,
+      created: "2023-08-18T13:34:24.279Z",
+      modified: "2023-08-18T13:34:24.279Z",
       deleted: false,
-      gstNumber: "1234634",
+      gstNumber: gstNumber,
+      invoiceDate: invoiceDate.format(),
+      invoiceNumber: invoiceNumber,
       mobileNumber: phoneNumber,
       item: list,
     };
     setSaveInvoiceData(data);
-
+    console.log("passing data to backend:", data);
     let response = await saveCustomerDataService(data);
+    setRefreshPage(true);
+    console.log("response from backend:", response);
   };
 
   const editTableHandler = (record, id, navigate) => {
@@ -195,8 +173,6 @@ export default function StateContext({ children }) {
     const { customerName, mobileNumber, address, item } = editRecord;
     setTotalItems(item);
     console.log(totalItems);
-    // setitemName(item.itemName);
-    // setQyt(item.qty);
     setCustomerName(customerName);
     setPhoneNumber(mobileNumber);
     setAddress(address);
@@ -254,8 +230,8 @@ export default function StateContext({ children }) {
     setAddress,
     itemName,
     setItemName,
-    qyt,
-    setQyt,
+    quantity,
+    setQuantity,
     price,
     setPrice,
     amount,
@@ -281,6 +257,9 @@ export default function StateContext({ children }) {
     setShowLogoutModal,
     deleteRecordStatus,
     setDeleteRecordStatus,
+    refreshPage,
+    setRefreshPage,
+    clearFields,
   };
 
   return <State.Provider value={context}>{children}</State.Provider>;

@@ -15,11 +15,11 @@ export default function Table() {
             <td className="font-bold">Amount</td>
           </tr>
         </thead>
-        {list.map(({ id, description, quantity, price, amount }) => (
+        {list.map(({ id, itemName, quantity, price, amount }) => (
           <React.Fragment key={id}>
             <tbody>
               <tr className="h-10">
-                <td>{description}</td>
+                <td>{itemName}</td>
                 <td>{quantity}</td>
                 <td>{price}</td>
                 <td>{amount}</td>

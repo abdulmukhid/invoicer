@@ -9,8 +9,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-// import { AiOutlineDelete } from "react-icons/ai";
-// import { AiOutlineEdit } from "react-icons/ai";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditSharpIcon from "@mui/icons-material/EditSharp";
 import {
@@ -18,8 +16,10 @@ import {
   getListOfRecords,
 } from "../servises/AllRecordsServises";
 import { useNavigate } from "react-router-dom";
-import { Alert, Button } from "@mui/material";
+import { Alert, CircularProgress } from "@mui/material";
+
 import IconButton from "@mui/material/IconButton";
+import { TablePagination } from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,45 +41,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-const records = [
-  {
-    id: 1,
-    customerName: "Salahuddin",
-    phoneNumber: "8421009959",
-    address: "Nanded",
-    date: "15/08/2023",
-    price: "25000",
-  },
-  {
-    id: 2,
-    customerName: "Raheman",
-    phoneNumber: "9921998701",
-    address: "Himayat nagar",
-    date: "15/08/2023",
-    price: "18000",
-  },
-  {
-    id: 3,
-    customerName: "Bilal",
-    phoneNumber: "7774051073",
-    address: "Nanded",
-    date: "10/08/2023",
-    price: "40000",
-  },
-  {
-    id: 4,
-    customerName: "Faizan",
-    phoneNumber: "9021995031",
-    address: "Kinwat",
-    date: "01/07/2023",
-    price: "10000",
-  },
-];
+const rowsPerPageOptions = [5, 10];
 
 export default function AllRecords() {
   const { editTableHandler, deleteRecordStatus, setDeleteRecordStatus } =
     useContext(State);
   const [record, setRecords] = React.useState([0]);
+
+  const [loading, setLoading] = React.useState(true);
 
   const navigate = useNavigate();
 
@@ -88,81 +57,117 @@ export default function AllRecords() {
   }, []);
 
   const getRecords = async () => {
+    setLoading(true);
     let response = await getListOfRecords();
-    setRecords(response.data);
-    console.log(response.data);
+    setTimeout(() => {
+      setRecords(response.data);
+      setLoading(false);
+    }, 1000);
   };
 
   const deleteRecord = async (id) => {
+    setLoading(true);
     let response = await deleteRecordById(id);
     if (response.data === "Deleted Successfully") {
+      getRecords();
       setTimeout(() => {
         setDeleteRecordStatus(false);
-        getRecords();
-      }, 3000);
+      }, 4000);
       setDeleteRecordStatus(true);
     }
   };
 
+  const handleRowsPerPageChange = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageOptions[0]);
+
+  const handlePageChange = (event, newPage) => {
+    setPage(newPage);
+  };
+
   return (
     <>
-      {deleteRecordStatus ? (
-        <Alert severity="success">Data Deleted Successfully!</Alert>
+      {loading ? (
+        <CircularProgress style={{ display: "flex", margin: "0 auto" }} />
       ) : (
-        <Alert style={{ display: "none" }} severity="error">
-          Error
-        </Alert>
+        <div>
+          {deleteRecordStatus ? (
+            <Alert severity="success">Data Deleted Successfully!</Alert>
+          ) : (
+            <Alert style={{ display: "none" }} severity="error">
+              Error
+            </Alert>
+          )}
+          {Object.keys(record).length === 0 ? (
+            <h6 style={{ textAlign: "center" }}>No Data Available!</h6>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell>Sr No</StyledTableCell>
+                    <StyledTableCell>Customer Name</StyledTableCell>
+                    <StyledTableCell>Phone Number</StyledTableCell>
+                    <StyledTableCell>Address</StyledTableCell>
+                    <StyledTableCell>Invoice Date</StyledTableCell>
+                    <StyledTableCell>Edit</StyledTableCell>
+                    <StyledTableCell>Delete</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody className="table-edit">
+                  {record
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((data, index) => (
+                      <StyledTableRow key={data.id}>
+                        <StyledTableCell>{data.id}</StyledTableCell>
+                        <StyledTableCell component="th" scope="row">
+                          {data.customerName}
+                        </StyledTableCell>
+                        <StyledTableCell>{data.mobileNumber}</StyledTableCell>
+                        <StyledTableCell>{data.address}</StyledTableCell>
+                        <StyledTableCell>{data.created}</StyledTableCell>
+                        <StyledTableCell>
+                          <IconButton
+                            color="primary"
+                            onClick={() =>
+                              editTableHandler(record, data.id, navigate)
+                            }
+                            aria-label="edit"
+                          >
+                            <EditSharpIcon />
+                          </IconButton>
+                        </StyledTableCell>
+
+                        <StyledTableCell>
+                          <IconButton
+                            color="primary"
+                            onClick={() => deleteRecord(data.id)}
+                            aria-label="delete"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </StyledTableCell>
+                      </StyledTableRow>
+                    ))}
+                </TableBody>
+              </Table>
+              <TablePagination
+                rowsPerPageOptions={rowsPerPageOptions}
+                component="div"
+                count={record.length}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handlePageChange}
+                onRowsPerPageChange={handleRowsPerPageChange}
+              />
+            </TableContainer>
+          )}
+        </div>
       )}
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>Sr No</StyledTableCell>
-              <StyledTableCell>Customer Name</StyledTableCell>
-              <StyledTableCell>Phone Number</StyledTableCell>
-              <StyledTableCell>Address</StyledTableCell>
-              <StyledTableCell>Invoice Date</StyledTableCell>
-              {/* <StyledTableCell align="right">Price</StyledTableCell> */}
-              <StyledTableCell>Edit</StyledTableCell>
-              <StyledTableCell>Delete</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {record.map((data, index) => (
-              <StyledTableRow key={data.id}>
-                <StyledTableCell>{data.id}</StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {data.customerName}
-                </StyledTableCell>
-                <StyledTableCell>{data.mobileNumber}</StyledTableCell>
-                <StyledTableCell>{data.address}</StyledTableCell>
-                <StyledTableCell>{data.created}</StyledTableCell>
-                {/* <StyledTableCell align="right">{records.price}</StyledTableCell> */}
-
-                <StyledTableCell>
-                  <IconButton
-                    color="primary"
-                    onClick={() => editTableHandler(record, data.id, navigate)}
-                    aria-label="edit"
-                  >
-                    <EditSharpIcon />
-                  </IconButton>
-                </StyledTableCell>
-
-                <StyledTableCell>
-                  <IconButton
-                    color="primary"
-                    onClick={() => deleteRecord(data.id)}
-                    aria-label="delete"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
     </>
   );
 }
