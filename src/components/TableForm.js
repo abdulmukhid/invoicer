@@ -13,20 +13,16 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
-import ReactToPrint, { PrintContextConsumer } from "react-to-print";
+import ReactToPrint from "react-to-print";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import dayjs from "dayjs";
 import PrintIcon from "@mui/icons-material/Print";
 import { getInvoiceNumberService } from "../servises/BillingApiService";
 import IconButton from "@mui/material/IconButton";
 import DoneIcon from "@mui/icons-material/Done";
 import AddIcon from "@mui/icons-material/Add";
-import ClientDetails from "./ClientDetails";
-import Header from "./Header";
-import Table from "./Table";
 
 export default function TableForm() {
   const [loading, setLoading] = React.useState(true);

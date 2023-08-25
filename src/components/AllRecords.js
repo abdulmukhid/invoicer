@@ -11,6 +11,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditSharpIcon from "@mui/icons-material/EditSharp";
+import dayjs from "dayjs";
 import {
   deleteRecordById,
   getListOfRecords,
@@ -129,7 +130,7 @@ export default function AllRecords() {
                         </StyledTableCell>
                         <StyledTableCell>{data.mobileNumber}</StyledTableCell>
                         <StyledTableCell>{data.address}</StyledTableCell>
-                        <StyledTableCell>{data.created}</StyledTableCell>
+                        <StyledTableCell>{dayjs(data.invoiceDate).format('DD/MM/YYYY')}</StyledTableCell>
                         <StyledTableCell>
                           <IconButton
                             color="primary"

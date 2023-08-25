@@ -39,7 +39,7 @@ export default function StateContext({ children }) {
   const [width] = useState(641);
   // const [invoices, setInvoices] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [showModal, setShowModal] = useState({show:false, value:""});
+  const [showModal, setShowModal] = useState({ show: false, value: "" });
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [deleteRecordStatus, setDeleteRecordStatus] = useState();
   const [refreshPage, setRefreshPage] = useState(false);
@@ -154,8 +154,8 @@ export default function StateContext({ children }) {
       id: customerId,
       address: address,
       customerName: customerName,
-      created: "2023-08-18T13:34:24.279Z",
-      modified: "2023-08-18T13:34:24.279Z",
+      created: invoiceDate.format(),
+      modified: invoiceDate.format(),
       deleted: false,
       gstNumber: gstSelect === "GST" ? gstNumber : "",
       invoiceDate: invoiceDate.format(),
@@ -185,10 +185,10 @@ export default function StateContext({ children }) {
   };
 
   // Delete function
-  const deleteRow = (itemId ) => {debugger;
+  const deleteRow = (itemId) => {
     setList(list.filter((row) => row.itemId !== itemId));
     // CalcSum();
-    setShowModal({show:false,value:""});
+    setShowModal({ show: false, value: "" });
   };
 
   const context = {
