@@ -1,7 +1,6 @@
 import { useContext } from "react";
 import ClientDetails from "./ClientDetails";
 import Header from "./Header";
-import MainDetails from "./MainDetails";
 import Table from "./Table";
 import { State } from "../context/stateContext";
 import InvoiceDashboardMenu from "./Drawer";
@@ -55,8 +54,6 @@ function App() {
         <div className="invoice__preview bg-white p-5 rounded-2xl border-4 border-blue-200" style={{ display: "none" }}>
           <div ref={componentRef} className="p-5">
             <Header />
-
-            <MainDetails />
 
             <ClientDetails />
 

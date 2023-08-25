@@ -338,3 +338,20 @@ html, body, #root{
 .table-edit .css-132a6sb-MuiTableCell-root{
  padding: 8px 0px 8px 16px !important;
 }
+.custom-dashboard-card{
+  margin-top: 3%;
+}
+.custom-print-table thead tr{
+  border-top: 1px dashed black;
+  border-bottom: 1px dashed black;
+  background-color: transparent;
+}
+.custom-print-table{
+  border-bottom: 1px dashed black;
+}
+.custom-print-table tr td{
+  padding: 0px;
+}
+.custom-print-table thead tr td{
+  padding: 8px 8px 8px 0;
+}

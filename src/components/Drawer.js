@@ -185,7 +185,11 @@ export default function InvoiceDashboardMenu() {
         <Grid container>
           {/* <Grid xs={1}></Grid> */}
           <Grid item xs={12}>
-            <Card sx={{ p: 2 }} variant="outlined" className="test1">
+            <Card
+              sx={{ p: 2 }}
+              variant="outlined"
+              className="custom-dashboard-card"
+            >
               <Routes>
                 <Route path="/" element={<TableForm />}></Route>
                 <Route path="/Records" element={<AllRecords />}></Route>

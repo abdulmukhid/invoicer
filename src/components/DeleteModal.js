@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { State } from "../context/stateContext";
+import { Button } from "@mui/material";
 
-export default function DeleteModal({ id }) {
+export default function DeleteModal({ itemId }) {
   const { setShowModal, deleteRow } = useContext(State);
 
   return (
@@ -16,21 +17,24 @@ export default function DeleteModal({ id }) {
 
           <ul className="flex flex-wrap gap-6 items-start md:items-start justify-between">
             <li>
-              <button
+               <Button
                 onClick={() => setShowModal(false)}
-                className="flex items-center justify-center gap-2 bg-emerald-500 py-2 px-4 rounded text-white hover:ring-4 hover:ring-emerald-300 hover:bg-emerald-600 transition-all duration-150"
-              >
-                No, go back
-              </button>
+                variant="contained"
+                color="success"
+
+                >
+                  No, go back
+                </Button>
             </li>
+
             <li>
-              <button
-                onClick={() => deleteRow(id)}
-                className="flex items-center justify-start md:justify-center gap-2 bg-red-500 py-2 px-4 rounded text-white hover:ring-4 hover:ring-red-300 hover:bg-red-600 transition-all duration-150"
+              <Button
+                onClick={() => deleteRow(itemId)}
+                variant="contained"
+                color="error"
               >
                 Yes, delete
-                <AiOutlineDelete className="text-white font-bold text-xl" />
-              </button>
+              </Button>
             </li>
           </ul>
         </div>

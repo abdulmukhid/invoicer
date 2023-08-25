@@ -3,29 +3,34 @@ import { State } from "../context/stateContext";
 import dayjs from 'dayjs';
 
 export default function ClientDetails() {
-  const { clientName, clientPhoneNumber , clientAddress, invoiceNumber, invoiceDate } =
+  const { customerName, phoneNumber , address, invoiceNumber, invoiceDate, gstNumber } =
     useContext(State);
 
   return (
     <>
       <div>
         <div>
-          <article className="mt-10 mb-14 flex">
+          <article className="mt-2 mb-2 flex" style={{justifyContent: "space-between"}}>
             <ul>
-              <li className="p-1 ">
-                <span className="font-bold">Customer Name:</span>{clientName}
+              <li>
+                <span className="font-bold">Customer Name:</span> {customerName}
               </li>
-              <li className="p-1 ">
-                <span className="font-bold">Mobile Number:</span>{clientPhoneNumber}
+              <li>
+                <span className="font-bold">Mobile Number:</span> {phoneNumber}
               </li>
-              <li className="p-1 ">
-                <span className="font-bold">Address:</span> {clientAddress}
+              <li>
+                <span className="font-bold">Address:</span> {address}
               </li>
-              <li className="p-1 ">
-                <span className="font-bold">Invoicer number:</span>{invoiceNumber}
+            </ul>
+            <ul>
+              <li>
+                <span className="font-bold">Invoice date:</span> {dayjs(invoiceDate).format('DD/MM/YYYY')}
               </li>
-              <li className="p-1">
-                <span className="font-bold">Invoice date:</span>{dayjs(invoiceDate).format('DD/MM/YYYY')}
+              <li>
+                <span className="font-bold">Invoicer number:</span> {invoiceNumber}
+              </li>
+              <li>
+                <span className="font-bold">GST Number:</span> {gstNumber}
               </li>
             </ul>
           </article>

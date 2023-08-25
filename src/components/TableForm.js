@@ -1,5 +1,4 @@
 import React, { useContext, useEffect } from "react";
-// import { AiOutlineDelete, AiOutlineEdit } from "react-icons/ai";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditSharpIcon from "@mui/icons-material/EditSharp";
 import { ToastContainer } from "react-toastify";
@@ -25,8 +24,11 @@ import { getInvoiceNumberService } from "../servises/BillingApiService";
 import IconButton from "@mui/material/IconButton";
 import DoneIcon from "@mui/icons-material/Done";
 import AddIcon from "@mui/icons-material/Add";
+import ClientDetails from "./ClientDetails";
+import Header from "./Header";
+import Table from "./Table";
 
-export default function Table() {
+export default function TableForm() {
   const [loading, setLoading] = React.useState(true);
   const {
     customerName,
@@ -76,15 +78,20 @@ export default function Table() {
     }, 1000);
     setRefreshPage(false);
   };
+  const pagestyle = `{ size: 2.5in 4in }`;
+
+
+  
 
   return (
     <>
       {loading ? (
         <CircularProgress style={{ display: "flex", margin: "0 auto" }} />
       ) : (
+      <div>
         <div>
           <ToastContainer position="top-right" theme="colored" />
-          <br />
+          
           <form onSubmit={handleSubmit}>
             <RadioGroup
               row
@@ -231,52 +238,50 @@ export default function Table() {
           </form>
           <br />
         </div>
-      )}
 
-      {/* Table items */}
-
-      <table width="100%" className="mb-10 overflow-auto custom-table">
-        <thead>
-          <tr className="bg-gray-100 p-1">
-            <td className="font-bold">Item</td>
-            <td className="font-bold">Quantity</td>
-            <td className="font-bold">Price</td>
-            <td className="font-bold">Amount</td>
-            <td className="font-bold">Edit</td>
-            <td className="font-bold">Delete</td>
-          </tr>
-        </thead>
-        {list.map(({ id, itemName, quantity, price, amount }) => (
-          <React.Fragment key={id}>
-            <tbody>
-              <tr className="h-10">
-                <td>{itemName}</td>
-                <td>{quantity}</td>
-                <td>{price}</td>
-                <td className="amount">{amount}</td>
-                <td>
-                  <IconButton onClick={() => editRow(id)} aria-label="edit">
-                    <EditSharpIcon />
-                  </IconButton>
-                </td>
-                <td>
-                  <IconButton
-                    onClick={() => setShowModal(true)}
-                    aria-label="delete"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </td>
-              </tr>
-            </tbody>
-            {showModal && <DeleteModal id={id} />}
-          </React.Fragment>
-        ))}
-      </table>
+      
+        <table width="100%" className="mb-10 overflow-auto custom-table">
+          <thead>
+            <tr className="bg-gray-100 p-1">
+              <td className="font-bold">Item</td>
+              <td className="font-bold">Quantity</td>
+              <td className="font-bold">Price</td>
+              <td className="font-bold">Amount</td>
+              <td className="font-bold">Edit</td>
+              <td className="font-bold">Delete</td>
+            </tr>
+          </thead>
+          <tbody> 
+          {list.map(({ id, itemId, itemName, quantity, price, amount }) => (
+            <React.Fragment>
+                <tr className="h-10" key={id}>
+                  <td>{itemName}</td>
+                  <td>{quantity}</td>
+                  <td>{price}</td>
+                  <td className="amount">{amount}</td>
+                  <td>
+                    <IconButton onClick={() => editRow(itemId)} aria-label="edit">
+                      <EditSharpIcon />
+                    </IconButton>
+                  </td>
+                  <td>
+                    <IconButton
+                      onClick={() => setShowModal({show:true,value:itemId})}
+                      aria-label="delete"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </td>
+                </tr>{showModal.show && <DeleteModal itemId={showModal.value} />}
+            </React.Fragment>
+          ))}
+          </tbody>
+        </table>
 
       <div className="md:grid grid-cols-2 gap-5">
         <div className="flex flex-col custom-mb">
           <ReactToPrint
+            pagestyle={pagestyle}
             trigger={() => (
               <Button
                 disabled={list.length == 0}
@@ -295,11 +300,13 @@ export default function Table() {
           ></ReactToPrint>
         </div>
         <div className="flex flex-col  custom-mb">
-          <h2 className="flex items-end justify-end text-gray-800 text-2xl font-bold">
-            Total Amount: {total.toLocaleString()}
+          <h2 className="flex items-end justify-end text-gray-800 font-bold">
+            TOTAL AMOUNT : {total.toLocaleString()}
           </h2>
         </div>
       </div>
+      </div>
+      )}
     </>
   );
 }

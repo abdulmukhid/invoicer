@@ -25,6 +25,7 @@ export default function StateContext({ children }) {
   const [totalItems, setTotalItems] = useState([]);
   const [gstSelect, setGstSelect] = useState("nonGST");
   const [gstNumber, setGstNumber] = useState("921234567");
+  const [customerId, setCustomerId] = useState(0);
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
@@ -38,7 +39,7 @@ export default function StateContext({ children }) {
   const [width] = useState(641);
   // const [invoices, setInvoices] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState({show:false, value:""});
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [deleteRecordStatus, setDeleteRecordStatus] = useState();
   const [refreshPage, setRefreshPage] = useState(false);
@@ -62,6 +63,7 @@ export default function StateContext({ children }) {
 
   const clearFields = () => {
     setInvoiceNumber("");
+    setCustomerId(0);
     setCustomerName("");
     setPhoneNumber("");
     setAddress("");
@@ -81,6 +83,7 @@ export default function StateContext({ children }) {
     } else {
       const newItems = {
         id: 0,
+        itemId: uuidv4(),
         itemName,
         quantity,
         price,
@@ -102,7 +105,7 @@ export default function StateContext({ children }) {
       toast.error("Please fill in all inputs");
     } else {
       const newItems = {
-        id: uuidv4(),
+        id: customerId,
         gstNumber,
         customerName,
         phoneNumber,
@@ -136,9 +139,9 @@ export default function StateContext({ children }) {
   });
 
   // Edit function
-  const editRow = (id) => {
-    const editingRow = list.find((row) => row.id === id);
-    setList(list.filter((row) => row.id !== id));
+  const editRow = (itemId) => {
+    const editingRow = list.find((row) => row.itemId === itemId);
+    setList(list.filter((row) => row.itemId !== itemId));
     setIsEditing(true);
     const { itemName, quantity, price } = editingRow;
     setItemName(itemName);
@@ -148,7 +151,7 @@ export default function StateContext({ children }) {
 
   const setInvoiceDataHandler = async () => {
     const data = {
-      id: 0,
+      id: customerId,
       address: address,
       customerName: customerName,
       created: "2023-08-18T13:34:24.279Z",
@@ -163,13 +166,15 @@ export default function StateContext({ children }) {
     setSaveInvoiceData(data);
     console.log("passing data to backend:", data);
     let response = await saveCustomerDataService(data);
+    clearFields();
     setRefreshPage(true);
     console.log("response from backend:", response);
   };
 
-  const editTableHandler = (record, id, navigate) => {
+  const editTableHandler = (record, id, navigate) => {debugger;
     const editRecord = record.find((row) => row.id == id);
     const { customerName, mobileNumber, address, item } = editRecord;
+    setCustomerId(id);
     setTotalItems(item);
     console.log(totalItems);
     setCustomerName(customerName);
@@ -180,10 +185,10 @@ export default function StateContext({ children }) {
   };
 
   // Delete function
-  const deleteRow = (id) => {
-    setList(list.filter((row) => row.id !== id));
+  const deleteRow = (itemId ) => {debugger;
+    setList(list.filter((row) => row.itemId !== itemId));
     // CalcSum();
-    setShowModal(false);
+    setShowModal({show:false,value:""});
   };
 
   const context = {
