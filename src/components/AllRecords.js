@@ -18,7 +18,6 @@ import {
 } from "../servises/AllRecordsServises";
 import { useNavigate } from "react-router-dom";
 import { Alert, CircularProgress } from "@mui/material";
-
 import IconButton from "@mui/material/IconButton";
 import { TablePagination } from "@mui/material";
 
@@ -111,6 +110,7 @@ export default function AllRecords() {
                 <TableHead>
                   <TableRow>
                     <StyledTableCell>Sr No</StyledTableCell>
+                    <StyledTableCell>Invoice Number</StyledTableCell>
                     <StyledTableCell>Customer Name</StyledTableCell>
                     <StyledTableCell>Phone Number</StyledTableCell>
                     <StyledTableCell>Address</StyledTableCell>
@@ -125,12 +125,15 @@ export default function AllRecords() {
                     .map((data, index) => (
                       <StyledTableRow key={data.id}>
                         <StyledTableCell>{data.id}</StyledTableCell>
+                        <StyledTableCell>{data.invoiceNumber}</StyledTableCell>
                         <StyledTableCell component="th" scope="row">
                           {data.customerName}
                         </StyledTableCell>
                         <StyledTableCell>{data.mobileNumber}</StyledTableCell>
                         <StyledTableCell>{data.address}</StyledTableCell>
-                        <StyledTableCell>{dayjs(data.invoiceDate).format('DD/MM/YYYY')}</StyledTableCell>
+                        <StyledTableCell>
+                          {dayjs(data.invoiceDate).format("DD/MM/YYYY")}
+                        </StyledTableCell>
                         <StyledTableCell>
                           <IconButton
                             color="primary"
